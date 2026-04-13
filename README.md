@@ -68,7 +68,7 @@ The workshop backlog is split into two folders:
 
 ## Dataset – `household_power_consumption.csv`
 
-The dataset contains minute-by-minute power consumption measurements from a household over several years.
+The dataset contains minute-by-minute power consumption measurements from a household.
 
 | Column                  | Type    | Description                                                                        |
 | ----------------------- | ------- | ---------------------------------------------------------------------------------- |
