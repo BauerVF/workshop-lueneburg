@@ -1,0 +1,8 @@
+@if (powerService.loading()) {
+  <p>Loading...</p>
+} @else if (powerService.error()) {
+  <p>Error: {{ powerService.error() }}</p>
+} @else {
+  <p>Loaded {{ powerService.count() }} records</p>
+  <pre>{{ powerService.records() | json }}</pre>
+}

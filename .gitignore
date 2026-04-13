@@ -1,0 +1,6 @@
+# Root-level gitignore
+
+# Gamemaster folders — not for participants
+**/gamemaster/
+.DS_Store
+.github/
