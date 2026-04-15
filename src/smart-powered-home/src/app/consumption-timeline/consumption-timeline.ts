@@ -4,6 +4,7 @@ import {
   inject,
   signal,
   OnInit,
+  effect,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BaseChartDirective } from 'ng2-charts';
@@ -22,7 +23,7 @@ import {
   Legend,
 } from 'chart.js';
 import { PowerConsumptionService, PowerConsumptionRecord } from '../power-consumption.service';
-import { parseRecordDate } from './consumption-timeline.utils';
+import { parseRecordDate, formatRecordDate } from './consumption-timeline.utils';
 
 // Register Chart.js components
 Chart.register(
@@ -46,7 +47,7 @@ interface RangeOption {
  * REQ-003 – Consumption Timeline Chart
  *
  * Line chart of `Global_active_power` over time. Allows selecting a date
- * and a range mode (day / week). Renders < 3s for ~1,440 points (NFR).
+ * (day mode) or a date range (week mode). Renders < 3s for ~1,440 points (NFR).
  * Uses Chart.js via ng2-charts — Angular-compatible, no direct DOM manipulation.
  */
 @Component({
@@ -65,10 +66,13 @@ export class ConsumptionTimeline implements OnInit {
     return [...dateSet];
   });
 
-  /** Currently selected date string (M/D/YY format). */
+  /** Currently selected date string (M/D/YY format) — used in day mode. */
   readonly selectedDate = signal<string | null>(null);
 
-  /** Range mode: single day or 7-day window. */
+  /** Date range [start, end] — used in week mode. */
+  readonly selectedDateRange = signal<[string, string] | null>(null);
+
+  /** Range mode: single day or date-range window. */
   readonly rangeMode = signal<'day' | 'week'>('day');
 
   readonly rangeOptions: RangeOption[] = [
@@ -79,21 +83,26 @@ export class ConsumptionTimeline implements OnInit {
   /** Filtered records for the selected range. Computed once per selection change. */
   readonly filteredRecords = computed(() => {
     const records = this.powerService.records();
-    const date = this.selectedDate();
     const mode = this.rangeMode();
-    if (!date || records.length === 0) return [];
+    if (records.length === 0) return [];
 
     if (mode === 'day') {
+      const date = this.selectedDate();
+      if (!date) return [];
       return records.filter((r) => r.date === date);
     }
 
-    // Week mode: include 7 days starting from the selected date
-    return this.getWeekRecords(records, date);
+    // Week mode: filter by the selected date range
+    const range = this.selectedDateRange();
+    if (!range) return [];
+    return this.getRangeRecords(records, range[0], range[1]);
   });
 
   /** Chart.js labels (time strings). */
   readonly chartLabels = computed(() =>
-    this.filteredRecords().map((r) => (this.rangeMode() === 'week' ? `${r.date} ${r.time}` : r.time)),
+    this.filteredRecords().map((r) =>
+      this.rangeMode() === 'week' ? `${r.date} ${r.time}` : r.time,
+    ),
   );
 
   /** Chart.js dataset. */
@@ -111,7 +120,8 @@ export class ConsumptionTimeline implements OnInit {
     },
   ]);
 
-  readonly chartOptions = {
+  /** Reactive chart options — x-axis title changes with the selected mode. */
+  readonly chartOptions = computed(() => ({
     responsive: true,
     maintainAspectRatio: false,
     interaction: { intersect: false, mode: 'index' as const },
@@ -121,6 +131,11 @@ export class ConsumptionTimeline implements OnInit {
     },
     scales: {
       x: {
+        title: {
+          display: true,
+          text: this.rangeMode() === 'day' ? 'Time' : 'Date',
+          color: '#a1a1aa',
+        },
         ticks: {
           color: '#a1a1aa',
           maxTicksLimit: 24,
@@ -135,7 +150,27 @@ export class ConsumptionTimeline implements OnInit {
         beginAtZero: true,
       },
     },
-  };
+  }));
+
+  constructor() {
+    // When switching modes, seed the other signal so the chart has data right away
+    effect(() => {
+      const mode = this.rangeMode();
+      const dates = this.availableDates();
+      if (dates.length === 0) return;
+
+      if (mode === 'week' && !this.selectedDateRange()) {
+        // Seed week range: last 7 days
+        const lastDate = dates[dates.length - 1];
+        const startIdx = Math.max(0, dates.length - 7);
+        const startDate = dates[startIdx];
+        this.selectedDateRange.set([startDate, lastDate]);
+      }
+      if (mode === 'day' && !this.selectedDate()) {
+        this.selectedDate.set(dates[dates.length - 1]);
+      }
+    });
+  }
 
   ngOnInit(): void {
     // Default to last date in dataset when records load
@@ -145,29 +180,57 @@ export class ConsumptionTimeline implements OnInit {
     }
   }
 
-  /** Called when user picks a new date from the calendar. */
+  /** Called when user picks a new date from the single-date calendar (day mode). */
   onDateChange(value: Date | null): void {
     if (!value) return;
-    // Convert JS Date to M/D/YY format to match dataset
-    const m = value.getMonth() + 1;
-    const d = value.getDate();
-    const yy = value.getFullYear() % 100;
-    this.selectedDate.set(`${m}/${d}/${yy}`);
+    this.selectedDate.set(formatRecordDate(value));
   }
 
-  /** Get the selected date as a JS Date for the calendar binding. */
+  /** Called when user picks a date range from the range calendar (week mode). */
+  onDateRangeChange(value: (Date | null)[] | null): void {
+    if (!value || value.length < 2 || !value[0] || !value[1]) return;
+    this.selectedDateRange.set([
+      formatRecordDate(value[0]),
+      formatRecordDate(value[1]),
+    ]);
+  }
+
+  /** Called when user changes the granularity dropdown. */
+  onRangeModeChange(value: 'day' | 'week'): void {
+    this.rangeMode.set(value);
+  }
+
+  /** Get the selected date as a JS Date for the single-date calendar binding. */
   get calendarDate(): Date | null {
     const dateStr = this.selectedDate();
     if (!dateStr) return null;
     return parseRecordDate(dateStr);
   }
 
-  /** Find 7 consecutive days of records starting from the given date. */
-  private getWeekRecords(records: PowerConsumptionRecord[], startDateStr: string): PowerConsumptionRecord[] {
-    const dates = [...new Set(records.map((r) => r.date))];
-    const startIdx = dates.indexOf(startDateStr);
-    if (startIdx === -1) return [];
-    const weekDates = new Set(dates.slice(startIdx, startIdx + 7));
-    return records.filter((r) => weekDates.has(r.date));
+  /** Get the selected range as JS Dates for the range calendar binding. */
+  get calendarDateRange(): (Date | null)[] | null {
+    const range = this.selectedDateRange();
+    if (!range) return null;
+    return [parseRecordDate(range[0]), parseRecordDate(range[1])];
+  }
+
+  /** Filter records that fall within a date range (inclusive). */
+  private getRangeRecords(
+    records: PowerConsumptionRecord[],
+    startDateStr: string,
+    endDateStr: string,
+  ): PowerConsumptionRecord[] {
+    // Build a set of all dataset dates that fall within the range
+    const startDate = parseRecordDate(startDateStr);
+    const endDate = parseRecordDate(endDateStr);
+    const matchingDates = new Set<string>();
+
+    for (const d of this.availableDates()) {
+      const parsed = parseRecordDate(d);
+      if (parsed >= startDate && parsed <= endDate) {
+        matchingDates.add(d);
+      }
+    }
+    return records.filter((r) => matchingDates.has(r.date));
   }
 }

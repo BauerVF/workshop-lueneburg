@@ -7,18 +7,30 @@
         <span>Power Consumption Over Time</span>
       </div>
       <div class="card-controls">
-        <p-datepicker
-          [ngModel]="calendarDate"
-          (ngModelChange)="onDateChange($event)"
-          dateFormat="m/d/y"
-          [showIcon]="true"
-          placeholder="Select date"
-          data-testid="timeline-date-picker"
-        />
+        @if (rangeMode() === 'day') {
+          <p-datepicker
+            [ngModel]="calendarDate"
+            (ngModelChange)="onDateChange($event)"
+            dateFormat="m/d/y"
+            [showIcon]="true"
+            placeholder="Select date"
+            data-testid="timeline-date-picker"
+          />
+        } @else {
+          <p-datepicker
+            [ngModel]="calendarDateRange"
+            (ngModelChange)="onDateRangeChange($event)"
+            selectionMode="range"
+            dateFormat="m/d/y"
+            [showIcon]="true"
+            placeholder="Select date range"
+            data-testid="timeline-date-range-picker"
+          />
+        }
         <p-select
           [options]="rangeOptions"
           [ngModel]="rangeMode()"
-          (ngModelChange)="rangeMode.set($event)"
+          (ngModelChange)="onRangeModeChange($event)"
           optionLabel="label"
           optionValue="value"
           data-testid="timeline-range-select"
@@ -34,7 +46,7 @@
         type="line"
         [datasets]="chartDatasets()"
         [labels]="chartLabels()"
-        [options]="chartOptions"
+        [options]="chartOptions()"
       ></canvas>
     } @else {
       <div class="no-data">
