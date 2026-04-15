@@ -1,8 +1,26 @@
+<!-- Smart Powered Home Dashboard -->
 @if (powerService.loading()) {
-  <p>Loading...</p>
+  <app-loading-skeleton />
 } @else if (powerService.error()) {
-  <p>Error: {{ powerService.error() }}</p>
+  <div class="error-banner">
+    <i class="pi pi-exclamation-circle"></i>
+    <span>Error: {{ powerService.error() }}</span>
+  </div>
 } @else {
-  <p>Loaded {{ powerService.count() }} records</p>
-  <pre>{{ powerService.records() | json }}</pre>
+  <div class="dashboard">
+    <!-- Row 1: Overview cards -->
+    <div class="dashboard-row dashboard-row--cards">
+      <app-power-overview />
+      <app-daily-total-badge />
+    </div>
+
+    <!-- Row 2: Timeline chart (full width) -->
+    <app-consumption-timeline />
+
+    <!-- Row 3: Breakdown chart + Peak alerts -->
+    <div class="dashboard-row dashboard-row--half">
+      <app-submetering-breakdown [records]="filteredRecords()" />
+      <app-peak-shaving [records]="filteredRecords()" />
+    </div>
+  </div>
 }

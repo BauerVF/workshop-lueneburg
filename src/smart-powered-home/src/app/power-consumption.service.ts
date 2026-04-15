@@ -1,5 +1,6 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../environments/environment';
 
 export interface PowerConsumptionRecord {
   index: number;
@@ -14,12 +15,26 @@ export interface PowerConsumptionRecord {
   subMetering3: number;
 }
 
+export interface PagedResult<T> {
+  items: T[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+export interface DataSummary {
+  totalRecords: number;
+  firstDate: string;
+  lastDate: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class PowerConsumptionService {
   private readonly http = inject(HttpClient);
-  private readonly csvUrl = '/household_power_consumption.csv';
+  private readonly apiUrl = environment.apiUrl;
 
   private readonly _records = signal<PowerConsumptionRecord[]>([]);
   private readonly _loading = signal(false);
@@ -30,52 +45,42 @@ export class PowerConsumptionService {
   readonly error = this._error.asReadonly();
   readonly count = computed(() => this._records().length);
 
+  /**
+   * Load all records from the API (used by charts and computed signals).
+   */
   load(): void {
     this._loading.set(true);
     this._error.set(null);
 
-    this.http.get(this.csvUrl, { responseType: 'text' }).subscribe({
-      next: (csv) => {
-        this._records.set(this.parseCsv(csv));
-        this._loading.set(false);
-      },
-      error: (err) => {
-        this._error.set(err.message ?? 'Failed to load data');
-        this._loading.set(false);
-      },
-    });
+    this.http
+      .get<PowerConsumptionRecord[]>(`${this.apiUrl}/powerconsumption/all`)
+      .subscribe({
+        next: (records) => {
+          this._records.set(records);
+          this._loading.set(false);
+        },
+        error: (err) => {
+          this._error.set(err.message ?? 'Failed to load data');
+          this._loading.set(false);
+        },
+      });
   }
 
-  private parseCsv(csv: string): PowerConsumptionRecord[] {
-    const lines = csv.split('\n');
-    return lines
-      .slice(1)
-      .filter((line) => line.trim().length > 0)
-      .map((line) => {
-        const [
-          index,
-          date,
-          time,
-          globalActivePower,
-          globalReactivePower,
-          voltage,
-          globalIntensity,
-          subMetering1,
-          subMetering2,
-          subMetering3,
-        ] = line.split(',');
-        return {
-          index: Number(index),
-          date,
-          time,
-          globalActivePower: Number(globalActivePower),
-          globalReactivePower: Number(globalReactivePower),
-          voltage: Number(voltage),
-          globalIntensity: Number(globalIntensity),
-          subMetering1: Number(subMetering1),
-          subMetering2: Number(subMetering2),
-          subMetering3: Number(subMetering3),
-        };
-      });
+  /**
+   * Paginated fetch – used by the data table (REQ-002).
+   */
+  loadPaged(page: number, pageSize: number, date?: string) {
+    let url = `${this.apiUrl}/powerconsumption?page=${page}&pageSize=${pageSize}`;
+    if (date) {
+      url += `&date=${encodeURIComponent(date)}`;
+    }
+    return this.http.get<PagedResult<PowerConsumptionRecord>>(url);
+  }
+
+  /**
+   * Lightweight summary (record count + date range).
+   */
+  loadSummary() {
+    return this.http.get<DataSummary>(`${this.apiUrl}/powerconsumption/summary`);
   }
 }

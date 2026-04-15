@@ -1,0 +1,25 @@
+<!-- REQ-001: Power Overview Widget -->
+<p-card styleClass="power-overview-card">
+  <ng-template #header>
+    <div class="card-header">
+      <i class="pi pi-bolt"></i>
+      <span>Current Power Consumption</span>
+    </div>
+  </ng-template>
+
+  @if (latestRecord(); as record) {
+    <div class="power-value" data-testid="power-value">
+      <span class="value">{{ record.globalActivePower | number:'1.2-2' }}</span>
+      <span class="unit">kW</span>
+    </div>
+    <div class="power-meta" data-testid="power-meta">
+      {{ record.date }} at {{ record.time }}
+    </div>
+  } @else {
+    <div class="power-value">
+      <span class="value">--</span>
+      <span class="unit">kW</span>
+    </div>
+    <div class="power-meta">No data available</div>
+  }
+</p-card>

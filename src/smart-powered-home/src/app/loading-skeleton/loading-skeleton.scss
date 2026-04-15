@@ -1,0 +1,43 @@
+:host {
+  display: block;
+}
+
+.skeleton-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  max-width: var(--dashboard-max-width, 1400px);
+  margin: 0 auto;
+}
+
+.skeleton-row {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.skeleton-row--cards {
+  .skeleton-card {
+    flex: 1;
+    height: 120px;
+  }
+}
+
+.skeleton-chart {
+  width: 100%;
+  height: 350px;
+}
+
+.skeleton-row--half {
+  .skeleton-chart-small {
+    flex: 1;
+    height: 300px;
+  }
+}
+
+/* Responsive: stack on mobile */
+@media (max-width: 768px) {
+  .skeleton-row {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,68 @@
+<!-- REQ-005: Peak Shaving Alert System -->
+<p-card styleClass="peak-card">
+  <ng-template #header>
+    <div class="card-header">
+      <div class="card-title">
+        <i class="pi pi-exclamation-triangle"></i>
+        <span>Peak Shaving Alerts</span>
+        @if (hasPeaks()) {
+          <p-badge [value]="'' + peakEvents().length" severity="danger" data-testid="peak-badge" />
+        }
+      </div>
+      <div class="card-controls">
+        <label>
+          Threshold (kW):
+          <p-inputnumber
+            [ngModel]="thresholdKw()"
+            (ngModelChange)="thresholdKw.set($event)"
+            [min]="0.1"
+            [max]="20"
+            [step]="0.5"
+            [minFractionDigits]="1"
+            mode="decimal"
+            data-testid="peak-threshold-input"
+          />
+        </label>
+        <label>
+          Min. minutes:
+          <p-inputnumber
+            [ngModel]="consecutiveMinutes()"
+            (ngModelChange)="consecutiveMinutes.set($event)"
+            [min]="1"
+            [max]="60"
+            [step]="1"
+            data-testid="peak-minutes-input"
+          />
+        </label>
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="peak-log" data-testid="peak-event-log">
+    @if (peakEvents().length > 0) {
+      <p-table [value]="peakEvents()" [rows]="5" [paginator]="true" [rowsPerPageOptions]="[5, 10, 25]">
+        <ng-template #header>
+          <tr>
+            <th>Start</th>
+            <th>End</th>
+            <th>Duration</th>
+            <th>Max Power</th>
+          </tr>
+        </ng-template>
+        <ng-template #body let-event>
+          <tr>
+            <td>{{ event.startDate }} {{ event.startTime }}</td>
+            <td>{{ event.endDate }} {{ event.endTime }}</td>
+            <td>{{ event.durationMinutes }} min</td>
+            <td>{{ event.maxPowerKw | number:'1.2-2' }} kW</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    } @else {
+      <div class="no-peaks">
+        <i class="pi pi-check-circle"></i>
+        <span>No peak events detected in the selected range.</span>
+      </div>
+    }
+  </div>
+</p-card>

@@ -1,0 +1,68 @@
+:host {
+  display: block;
+}
+
+.peak-card {
+  height: 100%;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 1.25rem 0;
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--p-text-muted-color);
+
+  i {
+    color: #ef4444;
+    font-size: 1.1rem;
+  }
+}
+
+.card-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--p-text-muted-color);
+  }
+
+  :deep(.p-inputnumber) {
+    width: 5rem;
+  }
+}
+
+.peak-log {
+  min-height: 100px;
+}
+
+.no-peaks {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  color: var(--p-text-muted-color);
+  font-size: 0.9rem;
+
+  i {
+    color: #10b981;
+    font-size: 1.2rem;
+  }
+}

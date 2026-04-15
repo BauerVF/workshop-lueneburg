@@ -1,0 +1,26 @@
+<!-- REQ-004: Sub-Metering Breakdown Chart -->
+<p-card styleClass="breakdown-card">
+  <ng-template #header>
+    <div class="card-header">
+      <i class="pi pi-chart-pie"></i>
+      <span>Energy Breakdown by Zone</span>
+    </div>
+  </ng-template>
+
+  <div class="chart-container" data-testid="breakdown-chart">
+    @if (records().length > 0) {
+      <canvas
+        baseChart
+        type="doughnut"
+        [datasets]="chartDatasets()"
+        [labels]="chartLabels"
+        [options]="chartOptions"
+      ></canvas>
+    } @else {
+      <div class="no-data">
+        <i class="pi pi-info-circle"></i>
+        <span>Select a date range to view breakdown.</span>
+      </div>
+    }
+  </div>
+</p-card>

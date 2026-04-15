@@ -1,0 +1,47 @@
+:host {
+  display: block;
+}
+
+.daily-total-card {
+  height: 100%;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--p-text-muted-color);
+
+  i {
+    color: var(--p-primary-color);
+    font-size: 1.1rem;
+  }
+}
+
+.badge-value {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+
+  .value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--p-text-color);
+    line-height: 1;
+  }
+
+  .unit {
+    font-size: 1rem;
+    color: var(--p-text-muted-color);
+    font-weight: 500;
+  }
+}
+
+.badge-meta {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--p-text-muted-color);
+}

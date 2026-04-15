@@ -1,0 +1,25 @@
+<!-- REQ-008: Daily Total Consumption Badge -->
+<p-card styleClass="daily-total-card">
+  <ng-template #header>
+    <div class="card-header">
+      <i class="pi pi-calendar"></i>
+      <span>Daily Total</span>
+    </div>
+  </ng-template>
+
+  @if (lastDate(); as date) {
+    <div class="badge-value" data-testid="daily-total-value">
+      <span class="value">{{ dailyTotalKwh() | number:'1.2-2' }}</span>
+      <span class="unit">kWh</span>
+    </div>
+    <div class="badge-meta" data-testid="daily-total-date">
+      {{ date }}
+    </div>
+  } @else {
+    <div class="badge-value">
+      <span class="value">--</span>
+      <span class="unit">kWh</span>
+    </div>
+    <div class="badge-meta">No data</div>
+  }
+</p-card>

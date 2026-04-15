@@ -1,0 +1,38 @@
+### SmartPoweredHome API – Manual Test Requests
+### Requires X-Api-Key header for all endpoints
+
+@host = http://localhost:5229
+@apiKey = dev-api-key-2026
+
+### Summary (count + date range)
+GET {{host}}/api/powerconsumption/summary
+X-Api-Key: {{apiKey}}
+
+###
+
+### Paginated records (page 1, 10 per page)
+GET {{host}}/api/powerconsumption?page=1&pageSize=10
+X-Api-Key: {{apiKey}}
+
+###
+
+### Paginated records filtered by date
+GET {{host}}/api/powerconsumption?page=1&pageSize=10&date=1/1/26
+X-Api-Key: {{apiKey}}
+
+###
+
+### All records (bulk – for client-side computation)
+GET {{host}}/api/powerconsumption/all
+X-Api-Key: {{apiKey}}
+
+###
+
+### Push data for a date to all SignalR clients
+POST {{host}}/api/powerconsumption/push?date=1/1/26
+X-Api-Key: {{apiKey}}
+
+###
+
+### Unauthenticated request (should return 401)
+GET {{host}}/api/powerconsumption/summary

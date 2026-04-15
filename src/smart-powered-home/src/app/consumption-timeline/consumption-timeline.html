@@ -1,0 +1,46 @@
+<!-- REQ-003: Consumption Timeline Chart -->
+<p-card styleClass="timeline-card">
+  <ng-template #header>
+    <div class="card-header">
+      <div class="card-title">
+        <i class="pi pi-chart-line"></i>
+        <span>Power Consumption Over Time</span>
+      </div>
+      <div class="card-controls">
+        <p-datepicker
+          [ngModel]="calendarDate"
+          (ngModelChange)="onDateChange($event)"
+          dateFormat="m/d/y"
+          [showIcon]="true"
+          placeholder="Select date"
+          data-testid="timeline-date-picker"
+        />
+        <p-select
+          [options]="rangeOptions"
+          [ngModel]="rangeMode()"
+          (ngModelChange)="rangeMode.set($event)"
+          optionLabel="label"
+          optionValue="value"
+          data-testid="timeline-range-select"
+        />
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="chart-container" data-testid="timeline-chart">
+    @if (filteredRecords().length > 0) {
+      <canvas
+        baseChart
+        type="line"
+        [datasets]="chartDatasets()"
+        [labels]="chartLabels()"
+        [options]="chartOptions"
+      ></canvas>
+    } @else {
+      <div class="no-data">
+        <i class="pi pi-info-circle"></i>
+        <span>Select a date to view the consumption timeline.</span>
+      </div>
+    }
+  </div>
+</p-card>
