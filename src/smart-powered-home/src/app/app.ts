@@ -7,6 +7,7 @@ import { DailyTotalBadge } from './daily-total-badge/daily-total-badge';
 import { ConsumptionTimeline } from './consumption-timeline/consumption-timeline';
 import { SubmeteringBreakdown } from './submetering-breakdown/submetering-breakdown';
 import { PeakShaving } from './peak-shaving/peak-shaving';
+import { TopThreeHours } from './top3-hours/top3-hours';
 
 /**
  * Root dashboard component. Orchestrates all widgets and provides
@@ -21,6 +22,7 @@ import { PeakShaving } from './peak-shaving/peak-shaving';
     ConsumptionTimeline,
     SubmeteringBreakdown,
     PeakShaving,
+    TopThreeHours,
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss',

@@ -1,0 +1,23 @@
+<!-- REQ-010: Top 3 Highest Consumption Hours -->
+<p-card styleClass="top3-card">
+  <ng-template #header>
+    <div class="card-header">
+      <i class="pi pi-clock"></i>
+      <span>Top 3 Peak Hours</span>
+    </div>
+  </ng-template>
+
+  @if (top3().length > 0) {
+    <ol class="top3-list" data-testid="top3-hours-list">
+      @for (entry of top3(); track entry.hour; let i = $index) {
+        <li class="top3-item">
+          <i [class]="rankIcons[i]" [style.color]="rankColors[i]"></i>
+          <span class="hour-label">{{ entry.label }}</span>
+          <span class="hour-value">{{ entry.avgPowerKw | number:'1.2-2' }} kW</span>
+        </li>
+      }
+    </ol>
+  } @else {
+    <div class="no-data">No data available</div>
+  }
+</p-card>

@@ -99,4 +99,23 @@ test.describe('Dashboard', () => {
     const minutesInput = page.locator('[data-testid="peak-minutes-input"]');
     await expect(minutesInput).toBeVisible();
   });
+
+  // REQ-010: Top 3 Highest Consumption Hours
+  test('REQ-010: displays top 3 peak consumption hours', async ({ page }) => {
+    await page.waitForSelector('.dashboard', { timeout: 30_000 });
+
+    const list = page.locator('[data-testid="top3-hours-list"]');
+    await expect(list).toBeVisible();
+
+    // Should have exactly 3 list items
+    const items = list.locator('li');
+    await expect(items).toHaveCount(3);
+
+    // Each item should display an hour range (e.g. "18:00 – 19:00") and a kW value
+    for (let i = 0; i < 3; i++) {
+      const text = await items.nth(i).textContent();
+      expect(text).toMatch(/\d{2}:00/); // hour label
+      expect(text).toMatch(/[\d.]+\s*kW/); // kW value
+    }
+  });
 });
