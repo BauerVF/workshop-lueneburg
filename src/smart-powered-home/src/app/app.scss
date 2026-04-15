@@ -27,6 +27,34 @@
   margin-bottom: var(--spacing-lg);
 }
 
+.dashboard__widgets-last-row {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: stretch;
+
+  app-top-consumption-hours {
+    width: 280px;
+    flex-shrink: 0;
+  }
+}
+
+.dashboard__hero-wrapper {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.dashboard__hero-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .dashboard__charts {
   display: grid;
   grid-template-columns: 1fr 1fr;
