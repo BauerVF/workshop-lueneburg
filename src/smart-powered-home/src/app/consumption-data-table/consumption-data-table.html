@@ -1,0 +1,102 @@
+<div class="card table-card">
+  <div class="table-card__header">
+    <div class="card__title">Consumption Data</div>
+    <div class="table-card__controls">
+      <label class="table-card__filter">
+        <span>Filter by date:</span>
+        <input
+          type="text"
+          placeholder="e.g. 1/1/26"
+          [value]="dateFilter()"
+          (input)="onDateFilter($event)"
+        />
+      </label>
+      <button
+        class="table-card__night-btn"
+        [class.table-card__night-btn--active]="nightFilterActive()"
+        (click)="toggleNightFilter()"
+      >
+        00:00 – 05:00
+      </button>
+      <span class="table-card__count">{{ filteredCount() }} {{ nightFilterActive() ? 'days' : 'records' }}</span>
+    </div>
+  </div>
+
+  <div class="table-card__scroll">
+    @if (nightFilterActive()) {
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Records</th>
+            <th>Avg Power (kW)</th>
+            <th>Avg Voltage (V)</th>
+            <th>Avg Intensity (A)</th>
+            <th>Kitchen (Wh)</th>
+            <th>Laundry (Wh)</th>
+            <th>Heating/AC (Wh)</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of paginatedAggregated(); track row.date) {
+            <tr>
+              <td>{{ row.date }}</td>
+              <td>{{ row.count }}</td>
+              <td>{{ row.avgActivePower.toFixed(3) }}</td>
+              <td>{{ row.avgVoltage.toFixed(1) }}</td>
+              <td>{{ row.avgIntensity.toFixed(1) }}</td>
+              <td>{{ row.totalSubMetering1.toFixed(0) }}</td>
+              <td>{{ row.totalSubMetering2.toFixed(0) }}</td>
+              <td>{{ row.totalSubMetering3.toFixed(0) }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="8" class="data-table__empty">No records found.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    } @else {
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Power (kW)</th>
+            <th>Voltage (V)</th>
+            <th>Intensity (A)</th>
+            <th>Kitchen</th>
+            <th>Laundry</th>
+            <th>Heating/AC</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (record of paginatedRecords(); track record.index) {
+            <tr>
+              <td>{{ record.date }}</td>
+              <td>{{ record.time }}</td>
+              <td>{{ record.globalActivePower.toFixed(3) }}</td>
+              <td>{{ record.voltage.toFixed(1) }}</td>
+              <td>{{ record.globalIntensity.toFixed(1) }}</td>
+              <td>{{ record.subMetering1 }}</td>
+              <td>{{ record.subMetering2 }}</td>
+              <td>{{ record.subMetering3 }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="8" class="data-table__empty">No records found.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+
+  @if (totalPages() > 1) {
+    <div class="table-card__pagination">
+      <button (click)="prevPage()" [disabled]="currentPage() === 0">Previous</button>
+      <span>Page {{ currentPage() + 1 }} of {{ totalPages() }}</span>
+      <button (click)="nextPage()" [disabled]="currentPage() >= totalPages() - 1">Next</button>
+    </div>
+  }
+</div>

@@ -1,5 +1,6 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 
 export interface PowerConsumptionRecord {
   index: number;
@@ -30,20 +31,35 @@ export class PowerConsumptionService {
   readonly error = this._error.asReadonly();
   readonly count = computed(() => this._records().length);
 
-  load(): void {
+  readonly lastRecord = computed(() => {
+    const records = this._records();
+    return records.length > 0 ? records[records.length - 1] : null;
+  });
+
+  readonly uniqueDates = computed(() => {
+    const records = this._records();
+    const dates = new Set<string>();
+    for (const r of records) {
+      dates.add(r.date);
+    }
+    return Array.from(dates);
+  });
+
+  async load(): Promise<void> {
+    if (this._loading()) return;
+
     this._loading.set(true);
     this._error.set(null);
 
-    this.http.get(this.csvUrl, { responseType: 'text' }).subscribe({
-      next: (csv) => {
-        this._records.set(this.parseCsv(csv));
-        this._loading.set(false);
-      },
-      error: (err) => {
-        this._error.set(err.message ?? 'Failed to load data');
-        this._loading.set(false);
-      },
-    });
+    try {
+      const csv = await firstValueFrom(this.http.get(this.csvUrl, { responseType: 'text' }));
+      this._records.set(this.parseCsv(csv));
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to load data';
+      this._error.set(message);
+    } finally {
+      this._loading.set(false);
+    }
   }
 
   private parseCsv(csv: string): PowerConsumptionRecord[] {
@@ -52,6 +68,7 @@ export class PowerConsumptionService {
       .slice(1)
       .filter((line) => line.trim().length > 0)
       .map((line) => {
+        const fields = line.split(',').map((f) => f.trim());
         const [
           index,
           date,
@@ -63,7 +80,7 @@ export class PowerConsumptionService {
           subMetering1,
           subMetering2,
           subMetering3,
-        ] = line.split(',');
+        ] = fields;
         return {
           index: Number(index),
           date,
@@ -76,6 +93,7 @@ export class PowerConsumptionService {
           subMetering2: Number(subMetering2),
           subMetering3: Number(subMetering3),
         };
-      });
+      })
+      .filter((r) => !isNaN(r.globalActivePower) && !isNaN(r.voltage));
   }
 }

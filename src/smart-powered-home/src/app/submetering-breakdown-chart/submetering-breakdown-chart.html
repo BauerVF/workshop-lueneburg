@@ -1,0 +1,19 @@
+<div class="card chart-card">
+  <div class="chart-card__header">
+    <div class="card__title">Sub-Metering Breakdown</div>
+    <select class="chart-card__select" (change)="dateSelection.onDateChange($event)">
+      @for (date of dateSelection.availableDates(); track date) {
+        <option [value]="date" [selected]="date === dateSelection.activeDate()">{{ date }}</option>
+      } @empty {
+        <option>No dates</option>
+      }
+    </select>
+  </div>
+  <div class="chart-card__canvas">
+    <canvas baseChart
+      type="doughnut"
+      [data]="chartData()"
+      [options]="chartOptions">
+    </canvas>
+  </div>
+</div>

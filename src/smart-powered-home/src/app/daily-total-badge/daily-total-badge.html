@@ -1,0 +1,7 @@
+@if (lastDate(); as date) {
+  <div class="card">
+    <div class="card__title">Last Date Total</div>
+    <div class="card__value">{{ totalKwh().toFixed(2) }} <span class="card__unit">kWh</span></div>
+    <div class="card__subtitle">{{ date }}</div>
+  </div>
+}

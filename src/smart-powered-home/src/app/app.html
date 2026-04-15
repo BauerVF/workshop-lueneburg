@@ -1,8 +1,41 @@
-@if (powerService.loading()) {
-  <p>Loading...</p>
-} @else if (powerService.error()) {
-  <p>Error: {{ powerService.error() }}</p>
+<header class="dashboard__header">
+  <h1>Smart Powered Home</h1>
+</header>
+
+@if (loading()) {
+  <div class="dashboard__content">
+    <div class="dashboard__skeleton-widgets">
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
+    </div>
+    <div class="skeleton skeleton-chart"></div>
+    <div class="skeleton skeleton-table"></div>
+  </div>
+} @else if (error()) {
+  <div class="dashboard__content">
+    <p class="dashboard__error">Error: {{ error() }}</p>
+  </div>
 } @else {
-  <p>Loaded {{ powerService.count() }} records</p>
-  <pre>{{ powerService.records() | json }}</pre>
+  <app-info-bar />
+
+  <div class="dashboard__content">
+    <section class="dashboard__widgets">
+      <app-power-overview-widget />
+      <app-daily-total-badge />
+      <app-current-intensity-badge />
+      <app-standby-load-indicator />
+      <app-top-consumption-hours />
+    </section>
+
+    <section class="dashboard__charts">
+      <app-consumption-timeline-chart />
+      <app-submetering-breakdown-chart />
+    </section>
+
+    <section class="dashboard__table">
+      <app-consumption-data-table />
+    </section>
+  </div>
 }

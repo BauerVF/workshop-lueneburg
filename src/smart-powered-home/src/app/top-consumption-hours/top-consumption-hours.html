@@ -1,0 +1,12 @@
+<div class="card">
+  <div class="card__title">Top 3 Consumption Hours</div>
+  @for (item of topHours(); track item.hour) {
+    <div class="top-hour">
+      <span class="top-hour__rank">#{{ $index + 1 }}</span>
+      <span class="top-hour__label">{{ item.label }}</span>
+      <span class="top-hour__value">{{ item.avgPower.toFixed(2) }} kW</span>
+    </div>
+  } @empty {
+    <p>No data available.</p>
+  }
+</div>

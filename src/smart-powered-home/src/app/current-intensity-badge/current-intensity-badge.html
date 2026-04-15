@@ -1,0 +1,7 @@
+@if (lastRecord(); as record) {
+  <div class="card">
+    <div class="card__title">Current Intensity</div>
+    <div class="card__value">{{ record.globalIntensity.toFixed(1) }} <span class="card__unit">A</span></div>
+    <div class="card__subtitle">{{ record.date }} at {{ record.time }}</div>
+  </div>
+}

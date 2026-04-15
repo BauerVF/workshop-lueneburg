@@ -1,0 +1,31 @@
+:host {
+  display: block;
+}
+
+.top-hour {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) 0;
+  border-bottom: 1px solid var(--color-border);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.top-hour__rank {
+  font-weight: 700;
+  color: var(--color-primary);
+  min-width: 24px;
+}
+
+.top-hour__label {
+  flex: 1;
+  font-size: 0.875rem;
+}
+
+.top-hour__value {
+  font-weight: 600;
+  font-size: 0.875rem;
+}

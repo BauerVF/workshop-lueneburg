@@ -1,0 +1,18 @@
+:host {
+  display: block;
+}
+
+.info-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.info-bar__separator {
+  opacity: 0.4;
+}
