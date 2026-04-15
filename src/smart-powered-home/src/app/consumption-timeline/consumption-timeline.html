@@ -9,7 +9,7 @@
       <div class="card-controls">
         @if (rangeMode() === 'day') {
           <p-datepicker
-            [ngModel]="calendarDate"
+            [ngModel]="calendarDate()"
             (ngModelChange)="onDateChange($event)"
             dateFormat="m/d/y"
             [showIcon]="true"
@@ -18,7 +18,7 @@
           />
         } @else {
           <p-datepicker
-            [ngModel]="calendarDateRange"
+            [ngModel]="calendarDateRange()"
             (ngModelChange)="onDateRangeChange($event)"
             selectionMode="range"
             dateFormat="m/d/y"

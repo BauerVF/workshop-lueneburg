@@ -5,6 +5,7 @@ import {
   signal,
   OnInit,
   effect,
+  untracked,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BaseChartDirective } from 'ng2-charts';
@@ -153,20 +154,20 @@ export class ConsumptionTimeline implements OnInit {
   }));
 
   constructor() {
-    // When switching modes, seed the other signal so the chart has data right away
+    // When switching modes, seed the other signal so the chart has data right away.
+    // Use untracked() for the signals we also write to — prevents circular deps.
     effect(() => {
       const mode = this.rangeMode();
       const dates = this.availableDates();
       if (dates.length === 0) return;
 
-      if (mode === 'week' && !this.selectedDateRange()) {
-        // Seed week range: last 7 days
+      if (mode === 'week' && !untracked(this.selectedDateRange)) {
         const lastDate = dates[dates.length - 1];
         const startIdx = Math.max(0, dates.length - 7);
         const startDate = dates[startIdx];
         this.selectedDateRange.set([startDate, lastDate]);
       }
-      if (mode === 'day' && !this.selectedDate()) {
+      if (mode === 'day' && !untracked(this.selectedDate)) {
         this.selectedDate.set(dates[dates.length - 1]);
       }
     });
@@ -200,19 +201,26 @@ export class ConsumptionTimeline implements OnInit {
     this.rangeMode.set(value);
   }
 
-  /** Get the selected date as a JS Date for the single-date calendar binding. */
-  get calendarDate(): Date | null {
+  /**
+   * Selected date as a JS Date for the single-date calendar binding.
+   * Must be a computed() — a plain getter creates a new Date reference every
+   * change-detection cycle which causes PrimeNG DatePicker to re-render in a loop.
+   */
+  readonly calendarDate = computed<Date | null>(() => {
     const dateStr = this.selectedDate();
     if (!dateStr) return null;
     return parseRecordDate(dateStr);
-  }
+  });
 
-  /** Get the selected range as JS Dates for the range calendar binding. */
-  get calendarDateRange(): (Date | null)[] | null {
+  /**
+   * Selected range as JS Dates for the range calendar binding.
+   * Same reason as above — must be computed() to keep a stable reference.
+   */
+  readonly calendarDateRange = computed<(Date | null)[] | null>(() => {
     const range = this.selectedDateRange();
     if (!range) return null;
     return [parseRecordDate(range[0]), parseRecordDate(range[1])];
-  }
+  });
 
   /** Filter records that fall within a date range (inclusive). */
   private getRangeRecords(
