@@ -1,0 +1,38 @@
+:host {
+  display: block;
+}
+
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem 0;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.table-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--p-text-muted-color);
+
+  i {
+    color: var(--p-primary-color);
+    font-size: 1.1rem;
+  }
+}
+
+.table-filter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.empty-message {
+  text-align: center;
+  color: var(--p-text-muted-color);
+  padding: 2rem;
+}

@@ -1,0 +1,71 @@
+:host {
+  display: block;
+}
+
+.reactive-card {
+  height: 100%;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--p-text-muted-color);
+
+  i {
+    color: var(--p-primary-color);
+    font-size: 1.1rem;
+  }
+}
+
+.pf-display {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pf-value {
+  .value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--p-text-color);
+  }
+
+  &.warning .value {
+    color: #f59e0b;
+  }
+}
+
+.pf-warning {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #f59e0b;
+  font-size: 0.8rem;
+  font-weight: 500;
+
+  i {
+    font-size: 0.9rem;
+  }
+}
+
+.pf-ok {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #10b981;
+  font-size: 0.8rem;
+  font-weight: 500;
+
+  i {
+    font-size: 0.9rem;
+  }
+}
+
+.no-data {
+  color: var(--p-text-muted-color);
+  font-size: 0.9rem;
+}

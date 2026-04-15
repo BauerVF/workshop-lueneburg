@@ -1,0 +1,32 @@
+<!-- REQ-015: Appliance Zone Comparison Bars -->
+<p-card>
+  <ng-template #header>
+    <div class="card-header">
+      <i class="pi pi-chart-bar"></i>
+      <span>Zone Comparison</span>
+    </div>
+  </ng-template>
+
+  @if (zones().length > 0) {
+    <div class="zones" data-testid="zone-comparison">
+      @for (zone of zones(); track zone.label) {
+        <div class="zone-row">
+          <div class="zone-label">
+            <i [class]="zone.icon" [style.color]="zone.color"></i>
+            <span>{{ zone.label }}</span>
+          </div>
+          <div class="zone-bar-track">
+            <div
+              class="zone-bar-fill"
+              [style.width.%]="zone.pct"
+              [style.background]="zone.color"
+            ></div>
+          </div>
+          <span class="zone-value">{{ zone.value | number:'1.0-0' }} Wh</span>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="no-data">No data</div>
+  }
+</p-card>

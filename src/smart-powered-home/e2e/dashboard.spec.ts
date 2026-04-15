@@ -120,4 +120,109 @@ test.describe('Dashboard', () => {
       expect(text).toMatch(/[\d.]+\s*kW/); // kW value
     }
   });
+
+  // REQ-013: Record Count & Date Range Info Bar
+  test('REQ-013: shows info bar with record count and date range', async ({ page }) => {
+    await page.waitForSelector('.dashboard', { timeout: 30_000 });
+
+    const infoBar = page.locator('[data-testid="info-bar"]');
+    await expect(infoBar).toBeVisible();
+
+    const text = await infoBar.textContent();
+    // Should contain a number (record count) and a "–" separator for date range
+    expect(text).toMatch(/[\d,]+\s*records/);
+    expect(text).toContain('–');
+  });
+
+  // REQ-007: Voltage Status Indicator
+  test('REQ-007: shows voltage status with colour-coded indicator', async ({ page }) => {
+    await page.waitForSelector('.dashboard', { timeout: 30_000 });
+
+    const voltageStatus = page.locator('[data-testid="voltage-status"]');
+    await expect(voltageStatus).toBeVisible();
+
+    // Should show a voltage value with V unit
+    const text = await voltageStatus.textContent();
+    expect(text).toMatch(/[\d.]+/);
+    // Should contain a label (Normal, Marginal, or Critical)
+    expect(text).toMatch(/Normal|Marginal|Critical/);
+  });
+
+  // REQ-012: Current Intensity Badge
+  test('REQ-012: shows current intensity value in amps', async ({ page }) => {
+    await page.waitForSelector('.dashboard', { timeout: 30_000 });
+
+    const intensityValue = page.locator('[data-testid="intensity-value"]');
+    await expect(intensityValue).toBeVisible();
+
+    const text = await intensityValue.textContent();
+    expect(text).toMatch(/[\d.]+/);
+
+    const meta = page.locator('[data-testid="intensity-meta"]');
+    await expect(meta).toBeVisible();
+    const metaText = await meta.textContent();
+    expect(metaText).toContain('at');
+  });
+
+  // REQ-014: Reactive Power Warning Flag
+  test('REQ-014: shows power factor value', async ({ page }) => {
+    await page.waitForSelector('.dashboard', { timeout: 30_000 });
+
+    const pfDisplay = page.locator('[data-testid="power-factor"]');
+    await expect(pfDisplay).toBeVisible();
+
+    const text = await pfDisplay.textContent();
+    // Should contain a decimal number (power factor between 0 and 1)
+    expect(text).toMatch(/[\d.]+/);
+    // Should show either Good or a warning message
+    expect(text).toMatch(/Good|Poor power factor/);
+  });
+
+  // REQ-015: Appliance Zone Comparison Bars
+  test('REQ-015: shows zone comparison bars for kitchen, laundry, heating', async ({ page }) => {
+    await page.waitForSelector('.dashboard', { timeout: 30_000 });
+
+    const zones = page.locator('[data-testid="zone-comparison"]');
+    await expect(zones).toBeVisible();
+
+    // Should have 3 zone rows
+    const rows = zones.locator('.zone-row');
+    await expect(rows).toHaveCount(3);
+
+    // Each row should have a label and a Wh value
+    for (let i = 0; i < 3; i++) {
+      const text = await rows.nth(i).textContent();
+      expect(text).toMatch(/Kitchen|Laundry|Heating/);
+      expect(text).toMatch(/Wh/);
+    }
+  });
+
+  // REQ-016: Midnight Standby Load Indicator
+  test('REQ-016: shows standby load indicator', async ({ page }) => {
+    await page.waitForSelector('.dashboard', { timeout: 30_000 });
+
+    const standby = page.locator('[data-testid="standby-load"]');
+    // Standby data might not be available if no midnight records for today
+    // So we check the component or no-data message is rendered
+    const standbyComponent = page.locator('app-standby-load');
+    await expect(standbyComponent).toBeVisible();
+  });
+
+  // REQ-002: Consumption Data Table
+  test('REQ-002: shows paginated data table with records', async ({ page }) => {
+    await page.waitForSelector('.dashboard', { timeout: 30_000 });
+
+    const table = page.locator('[data-testid="data-table"]');
+    await expect(table).toBeVisible({ timeout: 10_000 });
+
+    // Table should have header columns
+    const headers = table.locator('th');
+    const headerCount = await headers.count();
+    expect(headerCount).toBe(8); // Date, Time, AP, Voltage, Intensity, Sub1/2/3
+
+    // Table should have data rows (at least 1)
+    const rows = table.locator('tbody tr');
+    const rowCount = await rows.count();
+    expect(rowCount).toBeGreaterThan(0);
+  });
 });

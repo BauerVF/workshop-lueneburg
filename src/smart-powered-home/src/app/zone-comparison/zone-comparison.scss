@@ -1,0 +1,74 @@
+:host {
+  display: block;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--p-text-muted-color);
+
+  i {
+    color: var(--p-primary-color);
+    font-size: 1.1rem;
+  }
+}
+
+.zones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.zone-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.zone-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 110px;
+  font-size: 0.85rem;
+  color: var(--p-text-color);
+
+  i {
+    font-size: 0.9rem;
+  }
+}
+
+.zone-bar-track {
+  flex: 1;
+  height: 1rem;
+  background: var(--p-surface-200);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.app-dark .zone-bar-track {
+  background: var(--p-surface-700);
+}
+
+.zone-bar-fill {
+  height: 100%;
+  border-radius: 0.5rem;
+  transition: width 0.4s ease;
+}
+
+.zone-value {
+  min-width: 80px;
+  text-align: right;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--p-text-color);
+}
+
+.no-data {
+  color: var(--p-text-muted-color);
+  font-size: 0.9rem;
+}

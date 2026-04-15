@@ -1,0 +1,12 @@
+<!-- REQ-013: Record Count & Date Range Info Bar -->
+<div class="info-bar" data-testid="info-bar">
+  <span class="info-item">
+    <i class="pi pi-database"></i>
+    {{ count() | number }} records
+  </span>
+  <span class="info-separator">|</span>
+  <span class="info-item">
+    <i class="pi pi-calendar"></i>
+    {{ firstDate() }} – {{ lastDate() }}
+  </span>
+</div>

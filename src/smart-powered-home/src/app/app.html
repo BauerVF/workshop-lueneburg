@@ -8,6 +8,9 @@
   </div>
 } @else {
   <div class="dashboard">
+    <!-- Info Bar (REQ-013) -->
+    <app-info-bar />
+
     <!-- Row 1: Overview cards -->
     <div class="dashboard-row dashboard-row--cards">
       <app-power-overview [records]="filteredRecords()" />
@@ -15,17 +18,33 @@
       <app-top3-hours [records]="filteredRecords()" />
     </div>
 
-    <!-- Row 2: Timeline chart (full width) -->
+    <!-- Row 2: Status indicators -->
+    <div class="dashboard-row dashboard-row--cards">
+      <app-voltage-status [records]="filteredRecords()" />
+      <app-current-intensity [records]="filteredRecords()" />
+      <app-reactive-power-warning [records]="filteredRecords()" />
+      <app-standby-load [records]="filteredRecords()" />
+    </div>
+
+    <!-- Row 3: Timeline chart (full width) -->
     <app-consumption-timeline
       (dateChanged)="onTimelineDateChanged($event)"
       (dateRangeChanged)="onTimelineDateRangeChanged($event)"
       (rangeModeChanged)="onTimelineRangeModeChanged($event)"
     />
 
-    <!-- Row 3: Breakdown chart + Peak alerts -->
+    <!-- Row 4: Breakdown charts + Peak alerts -->
     <div class="dashboard-row dashboard-row--half">
       <app-submetering-breakdown [records]="filteredRecords()" />
       <app-peak-shaving [records]="filteredRecords()" />
     </div>
+
+    <!-- Row 5: Zone comparison -->
+    <div class="dashboard-row dashboard-row--half">
+      <app-zone-comparison [records]="filteredRecords()" />
+    </div>
+
+    <!-- Row 6: Data table (REQ-002) -->
+    <app-data-table />
   </div>
 }

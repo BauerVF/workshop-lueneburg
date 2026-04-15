@@ -1,0 +1,67 @@
+<!-- REQ-002: Consumption Data Table with Server-Side Pagination -->
+<p-card>
+  <ng-template #header>
+    <div class="table-header">
+      <div class="table-title">
+        <i class="pi pi-table"></i>
+        <span>Consumption Data</span>
+      </div>
+      <div class="table-filter">
+        <p-datepicker
+          [ngModel]="filterDate()"
+          (ngModelChange)="onDateFilterChange($event)"
+          placeholder="Filter by date"
+          dateFormat="m/d/y"
+          [showIcon]="true"
+          [showClear]="true"
+          (onClear)="clearDateFilter()"
+        />
+      </div>
+    </div>
+  </ng-template>
+
+  <p-table
+    [value]="rows()"
+    [lazy]="true"
+    [paginator]="true"
+    [rows]="pageSize()"
+    [totalRecords]="totalRecords()"
+    [loading]="loading()"
+    [first]="first()"
+    [rowsPerPageOptions]="[25, 50, 100]"
+    (onLazyLoad)="onLazyLoad($event)"
+    dataKey="index"
+    data-testid="data-table"
+    [tableStyle]="{ 'min-width': '60rem' }"
+  >
+    <ng-template #header>
+      <tr>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Active Power (kW)</th>
+        <th>Voltage (V)</th>
+        <th>Intensity (A)</th>
+        <th>Kitchen (Wh)</th>
+        <th>Laundry (Wh)</th>
+        <th>Heating/AC (Wh)</th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-row>
+      <tr>
+        <td>{{ row.date }}</td>
+        <td>{{ row.time }}</td>
+        <td>{{ row.globalActivePower | number:'1.3-3' }}</td>
+        <td>{{ row.voltage | number:'1.1-1' }}</td>
+        <td>{{ row.globalIntensity | number:'1.1-1' }}</td>
+        <td>{{ row.subMetering1 | number:'1.0-0' }}</td>
+        <td>{{ row.subMetering2 | number:'1.0-0' }}</td>
+        <td>{{ row.subMetering3 | number:'1.0-0' }}</td>
+      </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="8" class="empty-message">No records found.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>

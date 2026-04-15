@@ -1,0 +1,64 @@
+:host {
+  display: block;
+}
+
+.voltage-card {
+  height: 100%;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--p-text-muted-color);
+
+  i {
+    color: var(--p-primary-color);
+    font-size: 1.1rem;
+  }
+}
+
+.voltage-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.voltage-value {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+
+  i {
+    font-size: 1.3rem;
+    align-self: center;
+  }
+
+  .value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--p-text-color);
+  }
+
+  .unit {
+    font-size: 0.9rem;
+    color: var(--p-text-muted-color);
+  }
+}
+
+.voltage-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.no-data {
+  color: var(--p-text-muted-color);
+  font-size: 0.9rem;
+}

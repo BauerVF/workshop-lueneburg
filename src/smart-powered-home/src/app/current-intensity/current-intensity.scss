@@ -1,0 +1,50 @@
+:host {
+  display: block;
+}
+
+.intensity-card {
+  height: 100%;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--p-text-muted-color);
+
+  i {
+    color: var(--p-primary-color);
+    font-size: 1.1rem;
+  }
+}
+
+.intensity-value {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+
+  .value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--p-text-color);
+  }
+
+  .unit {
+    font-size: 1rem;
+    color: var(--p-text-muted-color);
+  }
+}
+
+.intensity-meta {
+  font-size: 0.8rem;
+  color: var(--p-text-muted-color);
+  margin-top: 0.25rem;
+}
+
+.no-data {
+  color: var(--p-text-muted-color);
+  font-size: 0.9rem;
+}

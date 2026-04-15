@@ -1,0 +1,24 @@
+<!-- REQ-007: Voltage Status Indicator -->
+<p-card styleClass="voltage-card">
+  <ng-template #header>
+    <div class="card-header">
+      <i class="pi pi-bolt"></i>
+      <span>Voltage Status</span>
+    </div>
+  </ng-template>
+
+  @if (info(); as v) {
+    <div class="voltage-display" data-testid="voltage-status">
+      <div class="voltage-value">
+        <i [class]="v.icon" [style.color]="v.color"></i>
+        <span class="value">{{ v.voltage | number:'1.1-1' }}</span>
+        <span class="unit">V</span>
+      </div>
+      <div class="voltage-badge" [style.background]="v.color">
+        {{ v.label }}
+      </div>
+    </div>
+  } @else {
+    <div class="no-data">No data</div>
+  }
+</p-card>

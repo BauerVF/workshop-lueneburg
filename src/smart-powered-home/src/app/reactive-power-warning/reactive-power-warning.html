@@ -1,0 +1,30 @@
+<!-- REQ-014: Reactive Power Warning Flag -->
+<p-card styleClass="reactive-card">
+  <ng-template #header>
+    <div class="card-header">
+      <i class="pi pi-wave-pulse"></i>
+      <span>Power Factor</span>
+    </div>
+  </ng-template>
+
+  @if (info(); as pf) {
+    <div class="pf-display" data-testid="power-factor">
+      <div class="pf-value" [class.warning]="pf.isWarning">
+        <span class="value">{{ pf.powerFactor | number:'1.2-2' }}</span>
+      </div>
+      @if (pf.isWarning) {
+        <div class="pf-warning" data-testid="pf-warning">
+          <i class="pi pi-exclamation-triangle"></i>
+          <span>Poor power factor – consider checking reactive loads</span>
+        </div>
+      } @else {
+        <div class="pf-ok">
+          <i class="pi pi-check-circle"></i>
+          <span>Good</span>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="no-data">No data</div>
+  }
+</p-card>

@@ -8,6 +8,13 @@ import { ConsumptionTimeline } from './consumption-timeline/consumption-timeline
 import { SubmeteringBreakdown } from './submetering-breakdown/submetering-breakdown';
 import { PeakShaving } from './peak-shaving/peak-shaving';
 import { TopThreeHours } from './top3-hours/top3-hours';
+import { InfoBar } from './info-bar/info-bar';
+import { VoltageStatus } from './voltage-status/voltage-status';
+import { CurrentIntensity } from './current-intensity/current-intensity';
+import { ReactivePowerWarning } from './reactive-power-warning/reactive-power-warning';
+import { ZoneComparison } from './zone-comparison/zone-comparison';
+import { StandbyLoad } from './standby-load/standby-load';
+import { DataTable } from './data-table/data-table';
 
 /**
  * Root dashboard component. Orchestrates all widgets and provides
@@ -23,6 +30,13 @@ import { TopThreeHours } from './top3-hours/top3-hours';
     SubmeteringBreakdown,
     PeakShaving,
     TopThreeHours,
+    InfoBar,
+    VoltageStatus,
+    CurrentIntensity,
+    ReactivePowerWarning,
+    ZoneComparison,
+    StandbyLoad,
+    DataTable,
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss',

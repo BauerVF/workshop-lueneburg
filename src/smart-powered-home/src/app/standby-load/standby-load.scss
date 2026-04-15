@@ -1,0 +1,61 @@
+:host {
+  display: block;
+}
+
+.standby-card {
+  height: 100%;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--p-text-muted-color);
+
+  i {
+    color: var(--p-primary-color);
+    font-size: 1.1rem;
+  }
+}
+
+.standby-display {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.standby-value {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+
+  .value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--p-text-color);
+  }
+
+  .unit {
+    font-size: 1rem;
+    color: var(--p-text-muted-color);
+  }
+}
+
+.standby-meta {
+  font-size: 0.85rem;
+  color: #f59e0b;
+  font-weight: 500;
+}
+
+.standby-sample {
+  font-size: 0.75rem;
+  color: var(--p-text-muted-color);
+}
+
+.no-data {
+  color: var(--p-text-muted-color);
+  font-size: 0.9rem;
+}

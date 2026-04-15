@@ -9,11 +9,12 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './e2e',
+  outputDir: '../../playwright-results',
   fullyParallel: false,
   forbidOnly: !!process.env['CI'],
   retries: process.env['CI'] ? 2 : 0,
   workers: 1,
-  reporter: 'html',
+  reporter: [['html', { outputFolder: '../../playwright-report' }]],
   timeout: 30_000,
   use: {
     baseURL: 'http://localhost:4200',
