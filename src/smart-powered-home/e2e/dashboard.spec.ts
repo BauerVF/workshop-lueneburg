@@ -107,12 +107,14 @@ test.describe('Dashboard', () => {
     const list = page.locator('[data-testid="top3-hours-list"]');
     await expect(list).toBeVisible();
 
-    // Should have exactly 3 list items
+    // Should have between 1 and 3 items (today may have fewer hours so far)
     const items = list.locator('li');
-    await expect(items).toHaveCount(3);
+    const count = await items.count();
+    expect(count).toBeGreaterThanOrEqual(1);
+    expect(count).toBeLessThanOrEqual(3);
 
     // Each item should display an hour range (e.g. "18:00 – 19:00") and a kW value
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < count; i++) {
       const text = await items.nth(i).textContent();
       expect(text).toMatch(/\d{2}:00/); // hour label
       expect(text).toMatch(/[\d.]+\s*kW/); // kW value

@@ -10,9 +10,9 @@
   <div class="dashboard">
     <!-- Row 1: Overview cards -->
     <div class="dashboard-row dashboard-row--cards">
-      <app-power-overview />
-      <app-daily-total-badge />
-      <app-top3-hours />
+      <app-power-overview [records]="filteredRecords()" />
+      <app-daily-total-badge [records]="filteredRecords()" />
+      <app-top3-hours [records]="filteredRecords()" />
     </div>
 
     <!-- Row 2: Timeline chart (full width) -->

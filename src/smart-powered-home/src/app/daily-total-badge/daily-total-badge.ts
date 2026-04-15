@@ -1,15 +1,16 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { Card } from 'primeng/card';
-import { PowerConsumptionService } from '../power-consumption.service';
+import { PowerConsumptionRecord } from '../power-consumption.service';
 
 /**
  * REQ-008 – Daily Total Consumption Badge
  *
- * Shows total energy consumed on the **last date** in the dataset in kWh.
+ * Shows total energy consumed for the **selected date/range** in kWh.
  * Conversion: each record is a 1-minute sample of kW →
  *   kWh = sum(globalActivePower) * (1/60)
- * Calculated once after data load via `computed()` (NFR).
+ * Reacts to the shared date selection from the timeline.
+ * Calculated once per input change via `computed()` (NFR).
  */
 @Component({
   selector: 'app-daily-total-badge',
@@ -18,22 +19,23 @@ import { PowerConsumptionService } from '../power-consumption.service';
   styleUrl: './daily-total-badge.scss',
 })
 export class DailyTotalBadge {
-  private readonly powerService = inject(PowerConsumptionService);
+  /** Filtered records from the parent (shares the timeline date filter). */
+  readonly records = input.required<PowerConsumptionRecord[]>();
 
-  /** The date string of the last record in the dataset. */
-  readonly lastDate = computed(() => {
-    const records = this.powerService.records();
-    return records.length > 0 ? records[records.length - 1].date : null;
+  /** The date label — first and last date in the filtered set. */
+  readonly dateLabel = computed(() => {
+    const recs = this.records();
+    if (recs.length === 0) return null;
+    const first = recs[0].date;
+    const last = recs[recs.length - 1].date;
+    return first === last ? first : `${first} – ${last}`;
   });
 
-  /** Total kWh for the last date, rounded to 2 decimals. Computed once. */
+  /** Total kWh for the filtered records, rounded to 2 decimals. */
   readonly dailyTotalKwh = computed(() => {
-    const records = this.powerService.records();
-    const date = this.lastDate();
-    if (!date) return 0;
-
-    const dayRecords = records.filter((r) => r.date === date);
-    const sumKw = dayRecords.reduce((sum, r) => sum + r.globalActivePower, 0);
+    const recs = this.records();
+    if (recs.length === 0) return 0;
+    const sumKw = recs.reduce((sum, r) => sum + r.globalActivePower, 0);
     // Each record spans 1 minute → kWh = sumKw / 60
     return sumKw / 60;
   });

@@ -7,7 +7,7 @@
     </div>
   </ng-template>
 
-  @if (lastDate(); as date) {
+  @if (dateLabel(); as date) {
     <div class="badge-value" data-testid="daily-total-value">
       <span class="value">{{ dailyTotalKwh() | number:'1.2-2' }}</span>
       <span class="unit">kWh</span>
