@@ -21,6 +21,9 @@ builder.Services.AddSingleton<LiteDbContext>();
 builder.Services.AddScoped<PowerConsumptionRepository>();
 builder.Services.AddHostedService<CsvImporter>();
 
+// ---------- Data simulation (generates a record every 5 s) ----------
+builder.Services.AddHostedService<DataSimulatorService>();
+
 // ---------- SignalR ----------
 builder.Services.AddSignalR();
 

@@ -83,4 +83,12 @@ export class PowerConsumptionService {
   loadSummary() {
     return this.http.get<DataSummary>(`${this.apiUrl}/powerconsumption/summary`);
   }
+
+  /**
+   * Append a single record pushed via SignalR.
+   * Triggers a new reference for all computed signals that depend on records().
+   */
+  addRecord(record: PowerConsumptionRecord): void {
+    this._records.update((prev) => [...prev, record]);
+  }
 }

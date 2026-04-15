@@ -1,17 +1,22 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { environment } from '../../environments/environment';
-import { PowerConsumptionRecord } from '../power-consumption.service';
+import { PowerConsumptionRecord, PowerConsumptionService } from '../power-consumption.service';
 
 /**
  * Manages the SignalR connection to the API's PowerConsumptionHub.
  *
  * Exposes signals so Angular components can react to real-time pushes
  * without subscribing to observables.
+ *
+ * Listens for:
+ *   - `ReceiveRecords`    – bulk push (original)
+ *   - `ReceiveNewRecord`  – single record from the 5-second simulator
  */
 @Injectable({ providedIn: 'root' })
 export class SignalRService {
   private connection: signalR.HubConnection | null = null;
+  private readonly powerService = inject(PowerConsumptionService);
 
   /** Records pushed by the server in real-time */
   readonly liveRecords = signal<PowerConsumptionRecord[]>([]);
@@ -31,9 +36,14 @@ export class SignalRService {
       .withAutomaticReconnect()
       .build();
 
-    // Listen for server-pushed records
+    // Listen for bulk server-pushed records
     this.connection.on('ReceiveRecords', (records: PowerConsumptionRecord[]) => {
       this.liveRecords.set(records);
+    });
+
+    // Listen for individual simulated records (every 5 s)
+    this.connection.on('ReceiveNewRecord', (record: PowerConsumptionRecord) => {
+      this.powerService.addRecord(record);
     });
 
     this.connection.onclose(() => this.connected.set(false));

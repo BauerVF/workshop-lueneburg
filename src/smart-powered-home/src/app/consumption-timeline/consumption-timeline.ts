@@ -6,6 +6,7 @@ import {
   OnInit,
   effect,
   untracked,
+  output,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BaseChartDirective } from 'ng2-charts';
@@ -80,6 +81,13 @@ export class ConsumptionTimeline implements OnInit {
     { label: 'Day', value: 'day' },
     { label: 'Week', value: 'week' },
   ];
+
+  /** Emits the selected date string whenever the user picks a new date. */
+  readonly dateChanged = output<string>();
+  /** Emits the selected date range whenever it changes. */
+  readonly dateRangeChanged = output<[string, string]>();
+  /** Emits when the granularity changes. */
+  readonly rangeModeChanged = output<'day' | 'week'>();
 
   /** Filtered records for the selected range. Computed once per selection change. */
   readonly filteredRecords = computed(() => {
@@ -162,43 +170,54 @@ export class ConsumptionTimeline implements OnInit {
       if (dates.length === 0) return;
 
       if (mode === 'week' && !untracked(this.selectedDateRange)) {
-        const lastDate = dates[dates.length - 1];
-        const startIdx = Math.max(0, dates.length - 7);
-        const startDate = dates[startIdx];
-        this.selectedDateRange.set([startDate, lastDate]);
+        // Seed with a range ending today
+        const todayStr = formatRecordDate(new Date());
+        const todayDate = new Date();
+        const weekAgo = new Date(todayDate);
+        weekAgo.setDate(weekAgo.getDate() - 6);
+        const startStr = formatRecordDate(weekAgo);
+        this.selectedDateRange.set([startStr, todayStr]);
+        this.dateRangeChanged.emit([startStr, todayStr]);
       }
       if (mode === 'day' && !untracked(this.selectedDate)) {
-        this.selectedDate.set(dates[dates.length - 1]);
+        const todayStr = formatRecordDate(new Date());
+        this.selectedDate.set(todayStr);
+        this.dateChanged.emit(todayStr);
       }
     });
   }
 
   ngOnInit(): void {
-    // Default to last date in dataset when records load
-    const records = this.powerService.records();
-    if (records.length > 0) {
-      this.selectedDate.set(records[records.length - 1].date);
-    }
+    // Default to today's date so live-simulated data is visible immediately
+    const today = new Date();
+    const todayStr = formatRecordDate(today);
+    this.selectedDate.set(todayStr);
+    this.dateChanged.emit(todayStr);
   }
 
   /** Called when user picks a new date from the single-date calendar (day mode). */
   onDateChange(value: Date | null): void {
     if (!value) return;
-    this.selectedDate.set(formatRecordDate(value));
+    const dateStr = formatRecordDate(value);
+    this.selectedDate.set(dateStr);
+    this.dateChanged.emit(dateStr);
   }
 
   /** Called when user picks a date range from the range calendar (week mode). */
   onDateRangeChange(value: (Date | null)[] | null): void {
     if (!value || value.length < 2 || !value[0] || !value[1]) return;
-    this.selectedDateRange.set([
+    const range: [string, string] = [
       formatRecordDate(value[0]),
       formatRecordDate(value[1]),
-    ]);
+    ];
+    this.selectedDateRange.set(range);
+    this.dateRangeChanged.emit(range);
   }
 
   /** Called when user changes the granularity dropdown. */
   onRangeModeChange(value: 'day' | 'week'): void {
     this.rangeMode.set(value);
+    this.rangeModeChanged.emit(value);
   }
 
   /**

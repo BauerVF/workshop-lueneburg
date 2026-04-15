@@ -33,36 +33,64 @@ export class App implements OnInit, OnDestroy {
 
   /** Selected date for the shared time-range filter (M/D/YY format). */
   readonly selectedDate = signal<string | null>(null);
+  /** Selected date range [start, end] for week mode. */
+  readonly selectedDateRange = signal<[string, string] | null>(null);
   /** Range mode: 'day' or 'week'. */
   readonly rangeMode = signal<'day' | 'week'>('day');
 
   /** Records filtered by the shared time-range — used by breakdown + peak shaving. */
   readonly filteredRecords = computed(() => {
     const records = this.powerService.records();
-    const date = this.selectedDate();
     const mode = this.rangeMode();
-    if (!date || records.length === 0) return [];
+    if (records.length === 0) return [];
 
     if (mode === 'day') {
+      const date = this.selectedDate();
+      if (!date) return [];
       return records.filter((r) => r.date === date);
     }
 
-    // Week mode: 7 consecutive days from selected date
-    const dates = [...new Set(records.map((r) => r.date))];
-    const startIdx = dates.indexOf(date);
-    if (startIdx === -1) return [];
-    const weekDates = new Set(dates.slice(startIdx, startIdx + 7));
-    return records.filter((r) => weekDates.has(r.date));
+    // Week mode: filter by the date range received from the timeline
+    const range = this.selectedDateRange();
+    if (!range) return [];
+    const allDates = [...new Set(records.map((r) => r.date))];
+    const startDate = this.parseDate(range[0]);
+    const endDate = this.parseDate(range[1]);
+    const matchingDates = new Set(
+      allDates.filter((d) => {
+        const parsed = this.parseDate(d);
+        return parsed >= startDate && parsed <= endDate;
+      }),
+    );
+    return records.filter((r) => matchingDates.has(r.date));
   });
 
   constructor() {
-    // Auto-select the last date once data loads
-    effect(() => {
-      const records = this.powerService.records();
-      if (records.length > 0 && this.selectedDate() === null) {
-        this.selectedDate.set(records[records.length - 1].date);
-      }
-    });
+    // Default to today's date
+    const today = new Date();
+    const todayStr = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear() % 100}`;
+    this.selectedDate.set(todayStr);
+  }
+
+  /** Event handler: timeline date changed. */
+  onTimelineDateChanged(date: string): void {
+    this.selectedDate.set(date);
+  }
+
+  /** Event handler: timeline date range changed. */
+  onTimelineDateRangeChanged(range: [string, string]): void {
+    this.selectedDateRange.set(range);
+  }
+
+  /** Event handler: timeline range mode changed. */
+  onTimelineRangeModeChanged(mode: 'day' | 'week'): void {
+    this.rangeMode.set(mode);
+  }
+
+  /** Parse M/D/YY date string to a JS Date. */
+  private parseDate(dateStr: string): Date {
+    const [m, d, y] = dateStr.split('/').map(Number);
+    return new Date((y < 100 ? 2000 + y : y), m - 1, d);
   }
 
   ngOnInit(): void {

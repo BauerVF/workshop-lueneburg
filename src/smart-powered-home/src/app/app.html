@@ -16,7 +16,11 @@
     </div>
 
     <!-- Row 2: Timeline chart (full width) -->
-    <app-consumption-timeline />
+    <app-consumption-timeline
+      (dateChanged)="onTimelineDateChanged($event)"
+      (dateRangeChanged)="onTimelineDateRangeChanged($event)"
+      (rangeModeChanged)="onTimelineRangeModeChanged($event)"
+    />
 
     <!-- Row 3: Breakdown chart + Peak alerts -->
     <div class="dashboard-row dashboard-row--half">
