@@ -3,4 +3,11 @@
 # Gamemaster folders — not for participants
 **/gamemaster/
 .DS_Store
+
+# Temp files
+build-output.txt
+pw-output*.txt
+test-results/
+playwright-results/
+playwright-report/
 .github/
