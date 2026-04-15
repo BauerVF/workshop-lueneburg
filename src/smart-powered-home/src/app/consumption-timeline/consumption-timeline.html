@@ -8,14 +8,44 @@
       </div>
       <div class="card-controls">
         @if (rangeMode() === 'day') {
-          <p-datepicker
-            [ngModel]="calendarDate()"
-            (ngModelChange)="onDateChange($event)"
-            dateFormat="m/d/y"
-            [showIcon]="true"
-            placeholder="Select date"
-            data-testid="timeline-date-picker"
-          />
+          <div class="date-nav-group">
+            <p-datepicker
+              [ngModel]="calendarDate()"
+              (ngModelChange)="onDateChange($event)"
+              dateFormat="m/d/y"
+              [showIcon]="true"
+              [iconDisplay]="'input'"
+              placeholder="Select date"
+              data-testid="timeline-date-picker"
+            >
+              <ng-template #inputicon let-clickCallBack="clickCallBack">
+                <img
+                  src="icons/Calendar.png"
+                  alt="Open calendar"
+                  class="date-icon calendar-icon"
+                  (click)="clickCallBack($event)"
+                />
+              </ng-template>
+            </p-datepicker>
+            <div class="day-arrows">
+              <button
+                class="day-arrow-btn"
+                title="Next day"
+                (click)="shiftDay(1)"
+                data-testid="day-up"
+              >
+                <img src="icons/Up.png" alt="Next day" class="date-icon arrow-icon" />
+              </button>
+              <button
+                class="day-arrow-btn"
+                title="Previous day"
+                (click)="shiftDay(-1)"
+                data-testid="day-down"
+              >
+                <img src="icons/Down.png" alt="Previous day" class="date-icon arrow-icon" />
+              </button>
+            </div>
+          </div>
         } @else {
           <p-datepicker
             [ngModel]="calendarDateRange()"
@@ -23,9 +53,19 @@
             selectionMode="range"
             dateFormat="m/d/y"
             [showIcon]="true"
+            [iconDisplay]="'input'"
             placeholder="Select date range"
             data-testid="timeline-date-range-picker"
-          />
+          >
+            <ng-template #inputicon let-clickCallBack="clickCallBack">
+              <img
+                src="icons/Calendar.png"
+                alt="Open calendar"
+                class="date-icon calendar-icon"
+                (click)="clickCallBack($event)"
+              />
+            </ng-template>
+          </p-datepicker>
         }
         <p-select
           [options]="rangeOptions"

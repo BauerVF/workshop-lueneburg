@@ -1,0 +1,30 @@
+
+Running 15 tests using 1 worker
+
+[1A[2K[1/15] [chromium] › e2e\dashboard.spec.ts:17:7 › Dashboard › REQ-009: shows loading skeletons then replaces with content
+Batchvorgang abbrechen (J/N)? [1A[2K  1) [chromium] › e2e\dashboard.spec.ts:17:7 › Dashboard › REQ-009: shows loading skeletons then replaces with content 
+
+    Test was interrupted.
+
+    Error: page.waitForSelector: Target page, context or browser has been closed
+    Call log:
+    [2m  - waiting for locator('.dashboard') to be visible[22m
+
+
+      18 |     // On fresh navigation, skeleton should appear briefly
+      19 |     // After data loads, skeleton should be gone and dashboard should be visible
+    > 20 |     await page.waitForSelector('.dashboard', { timeout: 30_000 });
+         |                ^
+      21 |     const skeleton = page.locator('app-loading-skeleton');
+      22 |     await expect(skeleton).toHaveCount(0);
+      23 |   });
+        at c:\Develop\workshop-lueneburg\src\smart-powered-home\e2e\dashboard.spec.ts:20:16
+
+    Error: browserContext.close: Target page, context or browser has been closed
+
+    Error Context: ..\..\playwright-results\dashboard-Dashboard-REQ-00-2d754--then-replaces-with-content-chromium\error-context.md
+
+
+Batchvorgang abbrechen (J/N)? [1A[2K  1 interrupted
+    [chromium] › e2e\dashboard.spec.ts:17:7 › Dashboard › REQ-009: shows loading skeletons then replaces with content 
+  14 did not run

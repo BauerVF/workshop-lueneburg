@@ -1,0 +1,89 @@
+<div class="about-page">
+  <div class="about-nav">
+    <a routerLink="/" class="nav-link">
+      <img src="icons/Home.png" alt="Home" class="nav-icon" />
+      <span>Back to Dashboard</span>
+    </a>
+  </div>
+
+  <p-card>
+    <ng-template #header>
+      <div class="about-header">
+        <h1>Smart Powered Home</h1>
+        <span class="version-badge">v1.0.0</span>
+      </div>
+    </ng-template>
+
+    <div class="about-content">
+      <section>
+        <h2>About the Application</h2>
+        <p>
+          <strong>Smart Powered Home</strong> is an interactive energy monitoring dashboard
+          that visualises household power consumption data in real time. Built as a modern
+          single-page application, it provides homeowners with actionable insights into their
+          energy usage patterns, helping them identify waste, optimise consumption, and reduce
+          electricity costs.
+        </p>
+      </section>
+
+      <section>
+        <h2>Key Features</h2>
+        <ul>
+          <li><strong>Live Power Overview</strong> — real-time global active power, voltage, and current intensity readings</li>
+          <li><strong>Interactive Timeline Chart</strong> — line chart with day/week views and date selection</li>
+          <li><strong>Sub-Metering Breakdown</strong> — doughnut chart comparing kitchen, laundry, and heating/AC zones</li>
+          <li><strong>Peak Shaving Alerts</strong> — configurable threshold-based peak detection with event logging</li>
+          <li><strong>Anomaly Detection</strong> — Z-score-based identification of unusual consumption patterns</li>
+          <li><strong>Voltage Status Indicator</strong> — colour-coded supply health monitor (normal / marginal / critical)</li>
+          <li><strong>Zone Comparison Bars</strong> — horizontal CSS bars for at-a-glance appliance zone comparison</li>
+          <li><strong>Standby Load Indicator</strong> — overnight base load estimation to spot "silent" energy waste</li>
+          <li><strong>Reactive Power Warning</strong> — power factor calculation with poor-PF alerts</li>
+          <li><strong>Paginated Data Table</strong> — server-side paginated access to all 148,000+ raw records</li>
+          <li><strong>Dark, Light & Wednesday Themes</strong> — three distinct visual themes including a gothic-inspired design</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Technology Stack</h2>
+        <div class="tech-grid">
+          <div class="tech-item">
+            <strong>Frontend</strong>
+            <span>Angular 21, PrimeNG, Chart.js, SCSS</span>
+          </div>
+          <div class="tech-item">
+            <strong>Backend</strong>
+            <span>.NET 10 Web API, LiteDB, SignalR</span>
+          </div>
+          <div class="tech-item">
+            <strong>Real-Time</strong>
+            <span>SignalR WebSocket hub with live data simulation</span>
+          </div>
+          <div class="tech-item">
+            <strong>Testing</strong>
+            <span>Vitest (unit), Playwright (E2E)</span>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Data Source</h2>
+        <p>
+          The application uses the <em>Individual Household Electric Power Consumption</em>
+          dataset, containing approximately 148,000 minute-resolution measurements of a single
+          household's electrical parameters including global active/reactive power, voltage,
+          current intensity, and three sub-metered zones (kitchen, laundry, heating/AC).
+        </p>
+      </section>
+
+      <section class="team-section">
+        <h2>Development Team</h2>
+        <p>
+          Designed and developed by the <strong>GoG team</strong> as part of a workshop-style
+          MVP project. The application demonstrates modern full-stack development practices
+          including signal-based state management, server-sent real-time updates, and
+          comprehensive automated testing.
+        </p>
+      </section>
+    </div>
+  </p-card>
+</div>

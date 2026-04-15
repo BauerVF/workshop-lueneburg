@@ -36,3 +36,15 @@
   color: var(--p-text-muted-color);
   padding: 2rem;
 }
+
+.date-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  cursor: pointer;
+}
+
+:host-context(.app-dark) .date-icon,
+:host-context(.app-wednesday) .date-icon {
+  filter: invert(0.85);
+}

@@ -13,9 +13,19 @@
           placeholder="Filter by date"
           dateFormat="m/d/y"
           [showIcon]="true"
+          [iconDisplay]="'input'"
           [showClear]="true"
           (onClear)="clearDateFilter()"
-        />
+        >
+          <ng-template #inputicon let-clickCallBack="clickCallBack">
+            <img
+              src="icons/Calendar.png"
+              alt="Open calendar"
+              class="date-icon"
+              (click)="clickCallBack($event)"
+            />
+          </ng-template>
+        </p-datepicker>
       </div>
     </div>
   </ng-template>

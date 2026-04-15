@@ -1,13 +1,18 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 import { App } from './app';
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+      ],
     }).compileComponents();
   });
 
@@ -17,10 +22,17 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should show loading skeleton initially', () => {
+  it('should render the navbar with app title', () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('app-loading-skeleton')).toBeTruthy();
+    expect(compiled.querySelector('.app-title')?.textContent).toContain('Smart Powered Home');
+  });
+
+  it('should render the theme switcher', () => {
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('app-theme-switcher')).toBeTruthy();
   });
 });

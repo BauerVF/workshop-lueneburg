@@ -3,59 +3,99 @@
   min-height: 100vh;
 }
 
-.dashboard {
+/* ── Top Navigation Bar ── */
+.app-navbar {
   display: flex;
-  flex-direction: column;
-  gap: var(--dashboard-gap, 1.5rem);
-  padding: 1.5rem;
-  max-width: var(--dashboard-max-width, 1400px);
-  margin: 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1.5rem;
+  background: var(--p-surface-0);
+  border-bottom: 1px solid var(--p-surface-200);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-.dashboard-row {
-  display: flex;
-  gap: var(--dashboard-gap, 1.5rem);
+:host-context(.app-dark) .app-navbar {
+  background: var(--p-surface-900);
+  border-color: var(--p-surface-700);
 }
 
-.dashboard-row--cards {
-  > * {
-    flex: 1;
-    min-width: 0;
-  }
+:host-context(.app-wednesday) .app-navbar {
+  background: #0a0a0a;
+  border-color: #333;
 }
 
-.dashboard-row--half {
-  > * {
-    flex: 1;
-    min-width: 0;
-  }
-}
-
-.error-banner {
+.navbar-left,
+.navbar-right {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 1.5rem;
-  margin: 1.5rem;
-  background: var(--p-red-50);
-  color: var(--p-red-700);
-  border-radius: 0.5rem;
-  font-size: 0.95rem;
+}
 
-  i {
-    font-size: 1.25rem;
+.app-title {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--p-text-color);
+  letter-spacing: -0.01em;
+}
+
+:host-context(.app-wednesday) .app-title {
+  font-family: 'Playfair Display', 'Georgia', serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.95rem;
+}
+
+.nav-icon-link {
+  display: flex;
+  align-items: center;
+  padding: 0.35rem;
+  border-radius: 0.375rem;
+  transition: background 0.15s;
+
+  &:hover {
+    background: var(--p-surface-100);
   }
 }
 
-/* Dark mode error banner */
-.app-dark .error-banner {
-  background: rgba(239, 68, 68, 0.15);
-  color: #fca5a5;
+:host-context(.app-dark) .nav-icon-link:hover {
+  background: var(--p-surface-800);
 }
 
-/* Responsive: stack on mobile */
+:host-context(.app-wednesday) .nav-icon-link:hover {
+  background: #222;
+}
+
+.nav-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+/* Wednesday theme: invert icons to white */
+:host-context(.app-wednesday) .nav-icon {
+  filter: invert(1);
+}
+
+/* Dark theme: brighten icons */
+:host-context(.app-dark) .nav-icon {
+  filter: invert(0.85);
+}
+
+/* ── Main Content Area ── */
+.app-content {
+  min-height: calc(100vh - 52px);
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-  .dashboard-row {
-    flex-direction: column;
+  .app-title {
+    font-size: 0.85rem;
+  }
+
+  .nav-icon {
+    width: 22px;
+    height: 22px;
   }
 }

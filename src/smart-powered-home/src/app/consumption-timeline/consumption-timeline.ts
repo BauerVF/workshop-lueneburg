@@ -241,6 +241,15 @@ export class ConsumptionTimeline implements OnInit {
     return [parseRecordDate(range[0]), parseRecordDate(range[1])];
   });
 
+  /** Shift the selected date by +/- N days (for arrow buttons). */
+  shiftDay(offset: number): void {
+    const current = this.calendarDate();
+    if (!current) return;
+    const next = new Date(current);
+    next.setDate(next.getDate() + offset);
+    this.onDateChange(next);
+  }
+
   /** Filter records that fall within a date range (inclusive). */
   private getRangeRecords(
     records: PowerConsumptionRecord[],

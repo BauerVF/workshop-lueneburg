@@ -1,0 +1,129 @@
+:host {
+  display: block;
+}
+
+.about-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.about-nav {
+  margin-bottom: 1.5rem;
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--p-primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.nav-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.about-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.25rem 0;
+
+  h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--p-text-color);
+  }
+}
+
+.version-badge {
+  background: var(--p-primary-color);
+  color: #fff;
+  padding: 0.2rem 0.6rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.about-content {
+  section {
+    margin-bottom: 1.5rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  h2 {
+    font-size: 1.1rem;
+    margin: 0 0 0.5rem;
+    color: var(--p-text-color);
+  }
+
+  p {
+    margin: 0 0 0.5rem;
+    line-height: 1.6;
+    color: var(--p-text-muted-color);
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 1.25rem;
+
+    li {
+      margin-bottom: 0.35rem;
+      line-height: 1.5;
+      color: var(--p-text-muted-color);
+    }
+  }
+}
+
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.tech-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.75rem;
+  background: var(--p-surface-100);
+  border-radius: 0.5rem;
+
+  strong {
+    font-size: 0.85rem;
+    color: var(--p-text-color);
+  }
+
+  span {
+    font-size: 0.8rem;
+    color: var(--p-text-muted-color);
+  }
+}
+
+.app-dark .tech-item,
+.app-wednesday .tech-item {
+  background: var(--p-surface-800);
+}
+
+.team-section {
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--p-surface-200);
+}
+
+.app-dark .team-section,
+.app-wednesday .team-section {
+  border-color: var(--p-surface-700);
+}

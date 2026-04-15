@@ -36,6 +36,75 @@
   flex-wrap: wrap;
 }
 
+/* Date picker with Up/Down arrows */
+.date-nav-group {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.date-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  cursor: pointer;
+}
+
+/* Dark/Wednesday themes: brighten icons */
+:host-context(.app-dark) .date-icon,
+:host-context(.app-wednesday) .date-icon {
+  filter: invert(0.85);
+}
+
+.calendar-icon {
+  margin-right: 0.25rem;
+}
+
+.day-arrows {
+  display: flex;
+  flex-direction: column;
+  margin-left: 0.25rem;
+  gap: 1px;
+}
+
+.day-arrow-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--p-surface-300);
+  border-radius: 3px;
+  padding: 1px 4px;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  .arrow-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  &:hover {
+    background: var(--p-surface-100);
+  }
+}
+
+:host-context(.app-dark) .day-arrow-btn {
+  border-color: var(--p-surface-600);
+
+  &:hover {
+    background: var(--p-surface-800);
+  }
+}
+
+:host-context(.app-wednesday) .day-arrow-btn {
+  border-color: #444;
+  border-radius: 0;
+
+  &:hover {
+    background: #222;
+  }
+}
+
 .chart-container {
   position: relative;
   height: 350px;

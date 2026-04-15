@@ -1,50 +1,18 @@
-<!-- Smart Powered Home Dashboard -->
-@if (powerService.loading()) {
-  <app-loading-skeleton />
-} @else if (powerService.error()) {
-  <div class="error-banner">
-    <i class="pi pi-exclamation-circle"></i>
-    <span>Error: {{ powerService.error() }}</span>
+<!-- Application Shell -->
+<nav class="app-navbar">
+  <div class="navbar-left">
+    <a routerLink="/" class="nav-icon-link" title="Home">
+      <img src="icons/Home.png" alt="Home" class="nav-icon" />
+    </a>
+    <span class="app-title">Smart Powered Home</span>
   </div>
-} @else {
-  <div class="dashboard">
-    <!-- Info Bar (REQ-013) -->
-    <app-info-bar />
-
-    <!-- Row 1: Overview cards -->
-    <div class="dashboard-row dashboard-row--cards">
-      <app-power-overview [records]="filteredRecords()" />
-      <app-daily-total-badge [records]="filteredRecords()" />
-      <app-top3-hours [records]="filteredRecords()" />
-    </div>
-
-    <!-- Row 2: Status indicators -->
-    <div class="dashboard-row dashboard-row--cards">
-      <app-voltage-status [records]="filteredRecords()" />
-      <app-current-intensity [records]="filteredRecords()" />
-      <app-reactive-power-warning [records]="filteredRecords()" />
-      <app-standby-load [records]="filteredRecords()" />
-    </div>
-
-    <!-- Row 3: Timeline chart (full width) -->
-    <app-consumption-timeline
-      (dateChanged)="onTimelineDateChanged($event)"
-      (dateRangeChanged)="onTimelineDateRangeChanged($event)"
-      (rangeModeChanged)="onTimelineRangeModeChanged($event)"
-    />
-
-    <!-- Row 4: Breakdown charts + Peak alerts -->
-    <div class="dashboard-row dashboard-row--half">
-      <app-submetering-breakdown [records]="filteredRecords()" />
-      <app-peak-shaving [records]="filteredRecords()" />
-    </div>
-
-    <!-- Row 5: Zone comparison -->
-    <div class="dashboard-row dashboard-row--half">
-      <app-zone-comparison [records]="filteredRecords()" />
-    </div>
-
-    <!-- Row 6: Data table (REQ-002) -->
-    <app-data-table />
+  <div class="navbar-right">
+    <a routerLink="/about" class="nav-icon-link" title="About">
+      <img src="icons/Abput.png" alt="About" class="nav-icon" />
+    </a>
+    <app-theme-switcher />
   </div>
-}
+</nav>
+
+<main class="app-content">
+  <router-outlet /></main>
