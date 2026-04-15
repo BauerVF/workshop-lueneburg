@@ -16,34 +16,12 @@ body {
   min-height: 100vh;
 }
 
-/* ── Skeleton animation (REQ-009) ── */
-@keyframes skeleton-shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
+/* ── Skeleton placeholders (REQ-009) ── */
 .skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--p-surface-200) 25%,
-    var(--p-surface-100) 50%,
-    var(--p-surface-200) 75%
-  );
-  background-size: 200% 100%;
-  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  background: var(--p-surface-200);
   border-radius: 0.5rem;
 }
 
 .app-dark .skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--p-surface-700) 25%,
-    var(--p-surface-600) 50%,
-    var(--p-surface-700) 75%
-  );
-  background-size: 200% 100%;
+  background: var(--p-surface-700);
 }

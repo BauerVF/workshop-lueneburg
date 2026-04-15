@@ -45,11 +45,16 @@ public sealed class DataSimulatorService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("DataSimulatorService started — generating records every 5 s");
+        _logger.LogInformation("DataSimulatorService started");
 
         // Wait a little for the CSV import to finish
         await Task.Delay(TimeSpan.FromSeconds(3), stoppingToken);
 
+        // ── Backfill today from 00:00 to now (1 record per minute) ──
+        await BackfillTodayAsync(stoppingToken);
+
+        // ── Live ticker: generate a record every 5 seconds ──
+        _logger.LogInformation("Live ticker running — generating records every 5 s");
         while (!stoppingToken.IsCancellationRequested)
         {
             try
@@ -68,10 +73,6 @@ public sealed class DataSimulatorService : BackgroundService
                 }
 
                 await _hub.Clients.All.SendAsync("ReceiveNewRecord", record, stoppingToken);
-
-                _logger.LogDebug(
-                    "Simulated record: {Date} {Time}  GAP={GlobalActivePower:F2} kW",
-                    record.Date, record.Time, record.GlobalActivePower);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
@@ -80,6 +81,55 @@ public sealed class DataSimulatorService : BackgroundService
 
             await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
         }
+    }
+
+    /// <summary>
+    /// Insert simulated records for today, one per minute from 00:00 to now.
+    /// Skips if records for today already exist in the database.
+    /// </summary>
+    private async Task BackfillTodayAsync(CancellationToken ct)
+    {
+        var today = DateTime.Today;
+        var todayStr = $"{today.Month}/{today.Day}/{today.Year % 100}";
+
+        using var scope = _scopeFactory.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<LiteDbContext>();
+
+        // Skip if we already have data for today
+        if (db.Records.Exists(r => r.Date == todayStr))
+        {
+            _logger.LogInformation("Backfill skipped — records for {Date} already exist", todayStr);
+            return;
+        }
+
+        var now = DateTime.Now;
+        var minutesSinceMidnight = (int)(now - today).TotalMinutes;
+        if (minutesSinceMidnight <= 0) return;
+
+        _logger.LogInformation(
+            "Backfilling {Count} records for {Date} (00:00 → {Time})",
+            minutesSinceMidnight, todayStr, now.ToString("HH:mm"));
+
+        var lastIndex = db.Records.Query()
+            .OrderByDescending(r => r.Index)
+            .Select(r => r.Index)
+            .FirstOrDefault();
+
+        var batch = new List<PowerConsumptionRecord>(minutesSinceMidnight);
+        for (var m = 0; m < minutesSinceMidnight; m++)
+        {
+            ct.ThrowIfCancellationRequested();
+            var timestamp = today.AddMinutes(m);
+            var record = GenerateRecord(timestamp);
+            record.Index = lastIndex + 1 + m;
+            batch.Add(record);
+        }
+
+        db.Records.InsertBulk(batch);
+        _logger.LogInformation("Backfill complete — {Count} records inserted", batch.Count);
+
+        // No SignalR push for backfill — the UI loads all data via the /all endpoint
+        await Task.CompletedTask;
     }
 
     /// <summary>
